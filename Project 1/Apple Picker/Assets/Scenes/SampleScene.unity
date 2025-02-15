@@ -603,7 +603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e105a6e8ea957554097cd4befeb05f48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fallSpeed: 0.1
+  fallSpeed: 0.025
   destroyHeight: -60
 --- !u!54 &302198759
 Rigidbody:
@@ -1199,7 +1199,6 @@ GameObject:
   - component: {fileID: 1581658088}
   - component: {fileID: 1581658087}
   - component: {fileID: 1581658086}
-  - component: {fileID: 1581658090}
   m_Layer: 0
   m_Name: Basket
   m_TagString: Untagged
@@ -1296,20 +1295,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1581658090
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1581658085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af7408e34f49ac64680e0c9c5ff5e7d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0.5
-  boundary: 110
 --- !u!1 &1819176860
 GameObject:
   m_ObjectHideFlags: 0
