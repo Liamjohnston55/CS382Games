@@ -1,23 +1,21 @@
 using UnityEngine;
+using ApplePicker.Apple;
 
-public class GameManager : MonoBehaviour
+namespace ApplePicker
 {
-    public GameObject apple;
-
-    // Start is called before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class GameManager : MonoBehaviour
     {
-        InvokeRepeating(nameof(AppleFall), 1f, 1f);
-    }
+        public GameObject apple;
 
-    void AppleFall()
-    {
-        Instantiate(apple, new Vector3(Random.Range(-8f, 8f), 5f, 0f), Quaternion.identity);
-    }
+        private AppleController appleController;
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Per-frame logic (if any) goes here
+        // Start is called before the first execution of Update after the MonoBehaviour is created
+        void Start() {
+            appleController = new AppleController(apple);
+        }
+
+        void OnDestroy() {
+            appleController.Disposed();
+        }
     }
 }
