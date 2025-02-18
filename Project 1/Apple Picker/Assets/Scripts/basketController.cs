@@ -29,13 +29,22 @@ public class BasketController : MonoBehaviour
     void OnCollisionEnter(Collision collisionInfo) {
         if (collisionInfo.gameObject.CompareTag("Apple")) {
             print("You got an apple!");
-
-        }
-        // This will let the gameManager file know that an apple has collided with the basket
+        
+            // This will let the gameManager file know that an apple has collided with the basket
             GameManager gm = FindObjectOfType<ApplePicker.GameManager>();
             if (gm != null)
                 gm.AppleCaught();
-        Destroy(collisionInfo.gameObject);
+            Destroy(collisionInfo.gameObject);
+        }
+        else if (collisionInfo.gameObject.CompareTag("Stick")) {
+            print("You got a stick!");
+
+            // This will let the gameManager file know that a stick has collided with the basket
+            GameManager gm = FindObjectOfType<ApplePicker.GameManager>();
+            if (gm != null)
+                gm.HealthDecrease();
+            Destroy(collisionInfo.gameObject);
+        }
     }
 }
 

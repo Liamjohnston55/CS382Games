@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 7238618471139399029}
   - component: {fileID: 4031674844445161545}
   - component: {fileID: 5211845475881821786}
-  - component: {fileID: 7701560380944013113}
+  - component: {fileID: 3732224017234359150}
   m_Layer: 0
   m_Name: Stick
-  m_TagString: Untagged
+  m_TagString: Stick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -112,24 +112,33 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &7701560380944013113
-MonoBehaviour:
+--- !u!54 &3732224017234359150
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5160016880286896190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76cef22da1a47fd42b9f609caa9e0bd3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  apple: {fileID: 4418575636514831642, guid: 6d0a5951b1e818f4a914a991ba5ea0f7, type: 3}
-  roundCounterText: {fileID: 0}
-  restartPanel: {fileID: 0}
-  restartButton: {fileID: 0}
-  currentRound: 1
-  maxRound: 10
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5463121830913022986
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,8 +263,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   apple: {fileID: 4418575636514831642, guid: 6d0a5951b1e818f4a914a991ba5ea0f7, type: 3}
+  stick: {fileID: 0}
   roundCounterText: {fileID: 0}
   restartPanel: {fileID: 0}
   restartButton: {fileID: 0}
   currentRound: 1
   maxRound: 10
+  lives: 4
