@@ -425,7 +425,7 @@
 -analyzer:"F:/Unity/6000.0.33f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
 "Assets/Scripts/AppleController.cs"
 "Assets/Scripts/BasketController.cs"
-"Assets/Scripts/gameManager.cs"
+"Assets/Scripts/GameManager.cs"
 "Assets/Scripts/startScreen.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01_UGUI.cs"

@@ -20,7 +20,7 @@ namespace ApplePicker.Apple
         async void AppleFall(){
             while (!cts.IsCancellationRequested) {
                 await Task.Delay(1000, cts.Token);
-                GameObject.Instantiate(apple, new Vector3(Random.Range(50f, -50f), 5, 0), Quaternion.identity);
+                GameObject.Instantiate(apple, new Vector3(Random.Range(165f, 265f), 35, -9), Quaternion.identity);
             }
         }
 
