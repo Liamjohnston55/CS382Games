@@ -19,7 +19,7 @@ namespace ApplePicker
         
         [Header("Round Settings")]
         public int currentRound = 1;       // Begin at the first level or "round" (Assign In-Game)
-        public int maxRound = 10;          // This is the final level             (Assign In-Game)
+        public int maxRound = 5;          // This is the final level             (Assign In-Game)
 
         int lives = 4;  // lives before you die 
 
@@ -95,6 +95,14 @@ namespace ApplePicker
         public void AppleCaught() {
             applesCaught++;
 
+            print($"[DEBUG] Apple Caught - currentRound: {currentRound}, applesCaught: {applesCaught}, applesRequired: {applesRequired}");
+            
+            if(applesCaught == 35) {
+                print("you won!!");
+                print("movingn to the winning scene");
+                SceneManager.LoadScene("WinnerScene");
+            }
+            
             // checking to see if we have won or lost
             if (applesCaught >= applesRequired) {
                 if (currentRound < maxRound) {
@@ -123,8 +131,8 @@ namespace ApplePicker
 
         // Reset button code
         // This will need to be put into the button "on click()" function to get us back to the title screen
-        public void RestartGame()
-        {
+        public void RestartGame() {
+            Destroy(gameObject);
             SceneManager.LoadScene("StartMenu");
         }
 
