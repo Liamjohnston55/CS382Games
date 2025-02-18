@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using ApplePicker.Apple;
 using TMPro;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ApplePicker
 {
@@ -31,23 +33,27 @@ namespace ApplePicker
 
         private AppleController appleController;
 
-        // Debugging 
+        // This is the variable that keeps track of the baskets
+        private List<BasketController> baskets = new List<BasketController>();
+
+        // This function makes sure that there is only one game manager
+        // multiple game managers will reset the lives every time
         void Awake(){
-            print("GameManager Awake: " + gameObject.name);
             var managers = FindObjectsOfType<GameManager>();
-            print("[DEBUG] Number of GameManager instances: " + managers.Length);
 
             if (managers.Length > 1) {
                 Destroy(gameObject);
                 return;
             }
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject); // DO NOT REMOVE BREAKS EVERYTHING
         }
-        // Debugging 
 
         void Start() {
-            print("GameManager lives: " + lives);
-            print($"GameManager Start - Lives: {lives} on {gameObject.name}");
+            //print("GameManager lives: " + lives);
+
+            // Find all the baskets and store them here
+            // using a .ToList() so i can use commands like .remove and .add because its easy
+            baskets = FindObjectsOfType<BasketController>().ToList();
 
             // Hides the reset button until you die
             if (restartPanel != null)
@@ -82,24 +88,47 @@ namespace ApplePicker
             }   
         }
 
-        public void HealthDecrease() {
+        public void HealthDecrease() {          
             print("You lost a life!");
             lives = lives - 1;
-            print("Number of lives left " + lives);
+
+            // Remove basket when one life is lost
+            // Only remove a basket if we have more than 1
+            // removing the last one messes with the controller script
+            if (baskets.Count > 1) {
+                BasketController highestBasket = baskets[0];
+
+                // foreach will go through each element of the list of baskets
+                // find the "top" basket and remove it
+                foreach (BasketController basket in baskets) {
+                    if (basket.transform.position.y > highestBasket.transform.position.y) {
+                        highestBasket = basket;
+                    }
+                }
+
+                // Remove the basket from the list
+                baskets.Remove(highestBasket);
+
+                // Remove the basket from the hierarchy 
+                Destroy(highestBasket.gameObject);
+                print("[DEBUG] Removed highest basket at Z: " + highestBasket.transform.position.y);
+            } 
+            else {
+                print("[DEBUG] Last basket remaining, not deleting.");
+            }
+
+            //print("Number of lives left " + lives);
             if (lives == 0) {
-                print("Game over has been called to from health decrease");
+                //print("Game over has been called to from health decrease");
                 GameOver();
             }
         }
 
         public void AppleCaught() {
             applesCaught++;
-
-            print($"[DEBUG] Apple Caught - currentRound: {currentRound}, applesCaught: {applesCaught}, applesRequired: {applesRequired}");
             
             if(applesCaught == 35) {
                 print("you won!!");
-                print("movingn to the winning scene");
                 SceneManager.LoadScene("WinnerScene");
             }
             
