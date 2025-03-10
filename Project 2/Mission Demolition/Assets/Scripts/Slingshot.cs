@@ -5,6 +5,7 @@ public class Slingshot : MonoBehaviour
     [Header("Drag all objects here:")]
     public GameObject projectilePrefab;           // The ball prefab
     public Transform spawnPoint;                  // Where to spawn the ball prefab
+    public GameObject slingshotCam;              // Camera that follows the ball
 
     [Header("Slingshot Settings")]
     public float maxPullDistance = 2f;           // Max distance the ball can be pulled
@@ -68,11 +69,14 @@ public class Slingshot : MonoBehaviour
     }
 
     private void SpawnProjectile() {
-        // Create the projectile at the spawn point
+        // spawn the ball
         currentProjectile = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
-        currentProjectileRb = currentProjectile.GetComponent<Rigidbody2D>();
 
-        // make it kinematic so it does not fall when being dragged
-        currentProjectileRb.bodyType = RigidbodyType2D.Kinematic;
+        // Have the camera follow the ball
+        FollowBall followScript = slingshotCam.GetComponent<FollowBall>();
+
+        if (followScript != null) {
+            followScript.target = currentProjectile.transform;
+        }
     }
 }
