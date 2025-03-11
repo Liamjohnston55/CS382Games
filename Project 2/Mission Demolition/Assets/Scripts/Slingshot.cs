@@ -5,13 +5,13 @@ public class Slingshot : MonoBehaviour
     [Header("Drag all objects here:")]
     public GameObject projectilePrefab;           // The ball prefab
     public Transform spawnPoint;                  // Where to spawn the ball prefab
-    public GameObject slingshotCam;              // Camera that follows the ball
+    public GameObject slingshotCam;               // Camera that follows the ball
 
     [Header("Slingshot Settings")]
-    public float maxPullDistance = 2f;           // Max distance the ball can be pulled
+    public float maxPullDistance = 2f;            // Max distance the ball can be pulled
 
     [Header("Launch Settings")]
-    public float launchForceMultiplier = 5f;     // Multiplier that scales how strong the launch force is
+    public float launchForceMultiplier = 5f;      // Multiplier that scales how strong the launch force is
 
     public CameraManager cameraManager;
     private GameObject currentProjectile;
@@ -23,50 +23,32 @@ public class Slingshot : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) {
             Camera activeCam = cameraManager.GetActiveCamera();
 
-            Debug.Log("Active camera: " + activeCam);
-if (activeCam == null) {
-    Debug.LogWarning("No active camera found!");
-    return;
-}
-
             // debugging----------------------------------------------------------------------
-             Debug.Log("Active camera: " + activeCam);
-            if (activeCam == null) {
-                Debug.LogWarning("No active camera found!");
-                return;
-            }
-             if (activeCam == null) {
-                Debug.LogWarning("No active camera found!");
-                return;
-            }
+            // Debug.Log("Active camera: " + activeCam);
+            // if (activeCam == null) {
+            //     Debug.LogWarning("No active camera found!");
+            //     return;
+            // }
             // debugging----------------------------------------------------------------------
 
-
-            // Grab the mouses cordinates and use raycast for the slingshot 
+            // Grab the mouse's coordinates and use raycast for the slingshot 
             // The raycast will detect if the slingshot is used
             Vector2 mouseWorldPos = activeCam.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero);
 
-
             // debugging----------------------------------------------------------------------
-            if (activeCam == null) {
-                Debug.LogWarning("No active camera found!");
-                return;
-            }
-            Debug.Log("Mouse clicked at: " + mouseWorldPos);
-            if (hit.collider != null) {
-            Debug.Log("Hit collider: " + hit.collider.gameObject.name);
-            } 
-            else {
-            Debug.Log("No collider hit!");
-            }
+            // Debug.Log("Mouse clicked at: " + mouseWorldPos);
+            // if (hit.collider != null) {
+            //     Debug.Log("Hit collider: " + hit.collider.gameObject.name);
+            // } else {
+            //     Debug.Log("No collider hit!");
+            // }
             // debugging----------------------------------------------------------------------
 
-            
             // When the slingshot is selected, spawn a ball
             if (hit.collider != null && hit.collider.gameObject == this.gameObject) {
                 // debugging
-                Debug.Log("Mouse button down detected!");
+                // Debug.Log("Mouse button down detected!");
                 // debugging
                 SpawnProjectile();
                 isDragging = true;
@@ -77,11 +59,13 @@ if (activeCam == null) {
         if (isDragging && currentProjectile != null) {
             Camera activeCam = cameraManager.GetActiveCamera();
             
-            Debug.Log("Active camera: " + activeCam);
-            if (activeCam == null) {
-                Debug.LogWarning("No active camera found!");
-                return;
-            }
+            // debugging----------------------------------------------------------------------
+            // Debug.Log("Active camera: " + activeCam);
+            // if (activeCam == null) {
+            //     Debug.LogWarning("No active camera found!");
+            //     return;
+            // }
+            // debugging----------------------------------------------------------------------
 
             Vector2 mousePos = activeCam.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = mousePos - (Vector2)spawnPoint.position;
@@ -108,7 +92,12 @@ if (activeCam == null) {
 
                 // Launch the ball using the direction, distance, and power, the forceMode makes sure that the ball is dynamic and can affect the world around it 
                 currentProjectileRb.AddForce(launchDir.normalized * distance * launchForceMultiplier, ForceMode2D.Impulse);
+
+                cameraManager.SwitchToFollowCam();
+                FollowCam.POI = currentProjectile;
             }
+
+            FollowCam.POI = currentProjectile;
 
             // When we are not dragging a ball, do not show anything 
             currentProjectile = null;
@@ -118,20 +107,17 @@ if (activeCam == null) {
     }
 
     private void SpawnProjectile() {
-        print("SpawnProjectile called!");
+        // Debug.Log("SpawnProjectile called!");
 
         // spawn the ball
         currentProjectile = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
 
-        // Have the camera follow the ball
-        FollowBall followScript = slingshotCam.GetComponent<FollowBall>();
-
-        if (followScript != null) {
-            followScript.target = currentProjectile.transform;
-        }
         // Get the Rigidbody2D for launching
         currentProjectileRb = currentProjectile.GetComponent<Rigidbody2D>();
         // Set it to Kinematic 
         currentProjectileRb.bodyType = RigidbodyType2D.Kinematic;
+
+        // set up the camera 
+        FollowCam.POI = currentProjectile;
     }
 }

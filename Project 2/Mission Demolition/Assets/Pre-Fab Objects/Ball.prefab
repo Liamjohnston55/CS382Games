@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8219176804355252657}
   - component: {fileID: 1153469588724772411}
   - component: {fileID: 7030183699102672773}
+  - component: {fileID: 1902696015186751803}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -152,3 +153,15 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &1902696015186751803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5980872923653000334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e9bd21166e64841bb098d4fa4435bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

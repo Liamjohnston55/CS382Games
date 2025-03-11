@@ -1,21 +1,38 @@
 using UnityEngine;
+using System.Collections;
 
-public class FollowBall : MonoBehaviour 
-{
-    [Tooltip("Script used for the camera to follow the ball")]
-    public Transform target;  // balls prefab
-    public Vector3 offset = new Vector3(0, 0, -10); // keeps the camera from being on-top of the ball
+public class FollowCam : MonoBehaviour {
+    // point at which the camera follows
+    public static GameObject POI; // this will be the launched ball that the follow cam focuses on
 
-    public float smoothTime = 0.2f; // time in seconds it takes for the camera to catch up to the ball
+    [Header("Set Dynamically")]
+    public float camZ; 
 
-    private Vector3 velocity = Vector3.zero;
+    void Awake() {
 
-    void LateUpdate() {
-        if (target == null) return;
+        // debugging----------------------------------------------------------------------
+        // Debug.Log("FollowCam Awake called");
+        // debugging----------------------------------------------------------------------
+
+
+        // Record the initial z position of the camera
+        // We need the z position to make sure we are not behind it and cant see the ball or map
+        camZ = transform.position.z;
+        FollowCam.POI = gameObject;  
+    }
+
+    void FixedUpdate() {
+        if (POI == null) return;
         
-        Vector3 targetPosition = target.position + offset;
+        // debugging----------------------------------------------------------------------
+        // Debug.Log("Following: " + POI.name);
+        // debugging----------------------------------------------------------------------
 
-        // move the camera to the balls position
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+        // Get the position of the ball and force the z value to be camZ so we can make sure to actually see it
+        Vector3 destination = POI.transform.position;
+        destination.z = camZ; 
+        
+        // Move the camera to the destination of the ball
+        transform.position = destination;
     }
 }
