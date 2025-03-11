@@ -13,6 +13,7 @@ public class Slingshot : MonoBehaviour
     [Header("Launch Settings")]
     public float launchForceMultiplier = 5f;     // Multiplier that scales how strong the launch force is
 
+    public CameraManager cameraManager;
     private GameObject currentProjectile;
     private Rigidbody2D currentProjectileRb;
     private bool isDragging = false;
@@ -20,13 +21,53 @@ public class Slingshot : MonoBehaviour
     void Update() {
         // Check for mouse down
         if (Input.GetMouseButtonDown(0)) {
+            Camera activeCam = cameraManager.GetActiveCamera();
+
+            Debug.Log("Active camera: " + activeCam);
+if (activeCam == null) {
+    Debug.LogWarning("No active camera found!");
+    return;
+}
+
+            // debugging----------------------------------------------------------------------
+             Debug.Log("Active camera: " + activeCam);
+            if (activeCam == null) {
+                Debug.LogWarning("No active camera found!");
+                return;
+            }
+             if (activeCam == null) {
+                Debug.LogWarning("No active camera found!");
+                return;
+            }
+            // debugging----------------------------------------------------------------------
+
+
             // Grab the mouses cordinates and use raycast for the slingshot 
             // The raycast will detect if the slingshot is used
-            Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mouseWorldPos = activeCam.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero);
 
+
+            // debugging----------------------------------------------------------------------
+            if (activeCam == null) {
+                Debug.LogWarning("No active camera found!");
+                return;
+            }
+            Debug.Log("Mouse clicked at: " + mouseWorldPos);
+            if (hit.collider != null) {
+            Debug.Log("Hit collider: " + hit.collider.gameObject.name);
+            } 
+            else {
+            Debug.Log("No collider hit!");
+            }
+            // debugging----------------------------------------------------------------------
+
+            
             // When the slingshot is selected, spawn a ball
             if (hit.collider != null && hit.collider.gameObject == this.gameObject) {
+                // debugging
+                Debug.Log("Mouse button down detected!");
+                // debugging
                 SpawnProjectile();
                 isDragging = true;
             }
@@ -34,7 +75,15 @@ public class Slingshot : MonoBehaviour
 
         //  check to see if the ball is being launched
         if (isDragging && currentProjectile != null) {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Camera activeCam = cameraManager.GetActiveCamera();
+            
+            Debug.Log("Active camera: " + activeCam);
+            if (activeCam == null) {
+                Debug.LogWarning("No active camera found!");
+                return;
+            }
+
+            Vector2 mousePos = activeCam.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = mousePos - (Vector2)spawnPoint.position;
 
             // This will make sure we cant pull the slingshot past the max pull distance
@@ -69,6 +118,8 @@ public class Slingshot : MonoBehaviour
     }
 
     private void SpawnProjectile() {
+        print("SpawnProjectile called!");
+
         // spawn the ball
         currentProjectile = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
 
@@ -78,5 +129,9 @@ public class Slingshot : MonoBehaviour
         if (followScript != null) {
             followScript.target = currentProjectile.transform;
         }
+        // Get the Rigidbody2D for launching
+        currentProjectileRb = currentProjectile.GetComponent<Rigidbody2D>();
+        // Set it to Kinematic 
+        currentProjectileRb.bodyType = RigidbodyType2D.Kinematic;
     }
 }

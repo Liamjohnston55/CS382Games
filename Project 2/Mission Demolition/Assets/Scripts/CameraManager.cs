@@ -9,8 +9,7 @@ public class CameraManager : MonoBehaviour
 
     private int currentIndex = 0;
 
-    private void Start()
-    {
+    private void Start(){
         // start off at the slingshot
         currentIndex = 0; // Slingshot index
         SwitchToSlingshotCam();
@@ -62,4 +61,25 @@ public class CameraManager : MonoBehaviour
             worldCam.SetActive(true);
         }
     }
+    
+    // This function will let us check which camera is being used, and then assign it to active so it can shoot off the ball
+    public Camera GetActiveCamera() {
+        if (slingshotCam.activeSelf) {
+            Debug.Log("Returning SlingshotCam camera");
+            return slingshotCam.GetComponent<Camera>();
+        }
+        else if (castleCam.activeSelf) {
+            Debug.Log("Returning CastleCam camera");
+            return castleCam.GetComponent<Camera>();
+        }
+        else if (worldCam.activeSelf) {
+            Debug.Log("Returning WorldCam camera");
+            return worldCam.GetComponent<Camera>();
+        }
+        else {
+            Debug.LogWarning("No camera is currently active!");
+            return null;
+        }
+    }
+
 }
