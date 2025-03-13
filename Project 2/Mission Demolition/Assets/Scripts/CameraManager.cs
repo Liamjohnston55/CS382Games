@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class CameraManager : MonoBehaviour 
-{
+public class CameraManager : MonoBehaviour {
     [Header("Camera Angles")]
     public GameObject slingshotCam;  // camera that is over the slingshot
     public GameObject castleCam;     // camera that is over the castle 

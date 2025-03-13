@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+// script used to follow the ball then switch back to the main camera
 public class FollowCam : MonoBehaviour {
     // point at which the camera follows
     public static GameObject POI; // this will be the launched ball that the follow cam focuses on

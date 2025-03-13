@@ -1,15 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
-public class CollisionDetections : MonoBehaviour
-{
+// This script is used to tell the follow camera when to transfer back to the orginial camera
+public class CollisionDetections : MonoBehaviour {
     private bool hasCollided = false;
 
     void OnCollisionEnter2D(Collision2D collision) {
         if (!hasCollided)
         {
             hasCollided = true;
-            //Debug.Log("Projectile collided with: " + collision.gameObject.name);
+            //Debug.Log("ball hit: " + collision.gameObject.name);
 
             // start the timer then switch back
             StartCoroutine(SwitchBackAndDestroyBall(3f));
@@ -27,6 +27,11 @@ public class CollisionDetections : MonoBehaviour
         CameraManager camMan = FindObjectOfType<CameraManager>();
         if (camMan != null) {
             camMan.SwitchBackFromFollowCam();
+        }
+
+        // if the player has no more lives call the ending scene 
+        if (GameManager.lives < 0) {
+            GameManager.Instance.GameOver();
         }
 
         //Debug.Log("Destroying projectile after collision delay");

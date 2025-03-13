@@ -1,7 +1,6 @@
 using UnityEngine;
 
-public class Slingshot : MonoBehaviour
-{
+public class Slingshot : MonoBehaviour {
     [Header("Drag all objects here:")]
     public GameObject projectilePrefab;           // The ball prefab
     public Transform spawnPoint;                  // Where to spawn the ball prefab
@@ -107,8 +106,24 @@ public class Slingshot : MonoBehaviour
     }
 
     private void SpawnProjectile() {
+        // If lives are less than 0, no more shots allowed.
+        if (GameManager.lives < 0) {
+            return;
+        }
+        
+        // this is to allow the final shot to be completed before sent to the game over screen
+        if (GameManager.lives == 0) {
+            GameManager.lives = -1;
+        }
+        // normal shots
+        else {
+            GameManager.lives--;  
+        }
+        
+        
+        
+        
         // Debug.Log("SpawnProjectile called!");
-
         // spawn the ball
         currentProjectile = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
 
@@ -116,6 +131,10 @@ public class Slingshot : MonoBehaviour
         currentProjectileRb = currentProjectile.GetComponent<Rigidbody2D>();
         // Set it to Kinematic 
         currentProjectileRb.bodyType = RigidbodyType2D.Kinematic;
+
+        // if the player does not make it into the green zone, subtract a life
+        // use GameManager.lives so the UI also updates
+        GameManager.lives--;
 
         // set up the camera 
         FollowCam.POI = currentProjectile;
