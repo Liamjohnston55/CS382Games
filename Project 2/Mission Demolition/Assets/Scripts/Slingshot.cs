@@ -117,6 +117,8 @@ public class Slingshot : MonoBehaviour {
         }
         // normal shots
         else {
+             // if the player does not make it into the green zone, subtract a life
+             // use GameManager.lives so the UI also updates
             GameManager.lives--;  
         }
         
@@ -134,7 +136,7 @@ public class Slingshot : MonoBehaviour {
 
         // if the player does not make it into the green zone, subtract a life
         // use GameManager.lives so the UI also updates
-        GameManager.lives--;
+        // GameManager.lives--;
 
         // set up the camera 
         FollowCam.POI = currentProjectile;

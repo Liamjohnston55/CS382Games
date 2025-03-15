@@ -6,8 +6,7 @@ public class CollisionDetections : MonoBehaviour {
     private bool hasCollided = false;
 
     void OnCollisionEnter2D(Collision2D collision) {
-        if (!hasCollided)
-        {
+        if (!hasCollided) {
             hasCollided = true;
             //Debug.Log("ball hit: " + collision.gameObject.name);
 
