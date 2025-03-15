@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour {
     public static GameManager Instance; // Singleton instance
     public static int lives = 5;        // Lives remaining (you can adjust this per level)
     public int startingLives = 5;       // this is to reset the lives at the beginning of each level 
+    public static bool levelCompleted = false;  // flag to indicate if level is completed
+
 
     void Awake(){
             if (Instance == null) {
@@ -22,6 +24,7 @@ public class GameManager : MonoBehaviour {
     void OnSceneLoaded(Scene scene, LoadSceneMode mode){
         // Reset lives for the new level when the scene is loaded
         lives = startingLives;
+        levelCompleted = false;
     }
 
     void OnDestroy() {
@@ -31,13 +34,22 @@ public class GameManager : MonoBehaviour {
 
     // this function is called when the player reaches the goal zone:
     public void CompleteLevel() {
-        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        if (nextIndex < SceneManager.sceneCountInBuildSettings) {
-            SceneManager.LoadScene(nextIndex);
+        levelCompleted = true; // Mark the level as completed
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // If we are at the last level, go to the winning screen
+        if (currentScene.name == "Level4") {
+            SceneManager.LoadScene("VictoryScreen");
         }
         else {
-            // if all levels are complete go to the winning screen
-            SceneManager.LoadScene("VictoryScreen");
+            int nextIndex = currentScene.buildIndex + 1;
+            if (nextIndex < SceneManager.sceneCountInBuildSettings) {
+                SceneManager.LoadScene(nextIndex);
+            }
+            else {
+                // failsafe 
+                SceneManager.LoadScene("VictoryScreen");
+            }
         }
     }
 

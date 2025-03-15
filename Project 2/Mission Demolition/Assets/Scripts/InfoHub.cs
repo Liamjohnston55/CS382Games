@@ -14,6 +14,6 @@ public class InfoHub : MonoBehaviour {
 
         // Display the current level: 
         int levelIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
-        currentLevelText.text = "Level: " + levelIndex;
+        currentLevelText.text = "Level: " + (levelIndex + 1);
     }
 }

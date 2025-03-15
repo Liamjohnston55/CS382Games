@@ -29,7 +29,7 @@ public class CollisionDetections : MonoBehaviour {
         }
 
         // if the player has no more lives call the ending scene 
-        if (GameManager.lives < 0) {
+        if (GameManager.lives < 0 && !GameManager.levelCompleted) {
             GameManager.Instance.GameOver();
         }
 
