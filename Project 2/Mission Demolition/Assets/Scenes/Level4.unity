@@ -489,7 +489,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 198162659}
-  - component: {fileID: 198162660}
   m_Layer: 0
   m_Name: Castle
   m_TagString: Untagged
@@ -514,18 +513,6 @@ Transform:
   - {fileID: 1466730285}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &198162660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 198162658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2799e945c21d63489b85af7a99a043c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &237315864
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +811,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313960198}
   m_CullTransparentMesh: 1
+--- !u!1 &356733692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 356733694}
+  - component: {fileID: 356733693}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &356733693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356733692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2799e945c21d63489b85af7a99a043c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingLives: 5
+--- !u!4 &356733694
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356733692}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 198.40889, y: 14.028713, z: -0.56342375}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &461295487
 GameObject:
   m_ObjectHideFlags: 0
@@ -4344,5 +4376,6 @@ SceneRoots:
   - {fileID: 2061767562}
   - {fileID: 19030715}
   - {fileID: 198162659}
+  - {fileID: 356733694}
   - {fileID: 1246343720988179837}
   - {fileID: 1547379074}
