@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager Instance; // Singleton instance
-    [Header("The actual amount of lives is: lives + 1")]
     public static int lives = 4;        // Lives remaining (you can adjust this per level)
+    [Header("The actual amount of lives is: lives + 1")]
     public int startingLives = 4;       // this is to reset the lives at the beginning of each level 
     public static bool levelCompleted = false;  // flag to indicate if level is completed
 
