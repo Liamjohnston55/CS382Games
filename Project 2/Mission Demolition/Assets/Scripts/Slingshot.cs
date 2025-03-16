@@ -17,6 +17,10 @@ public class Slingshot : MonoBehaviour {
     private Rigidbody2D currentProjectileRb;
     private bool isDragging = false;
 
+    public LineRenderer rubberBand;    // for the rubber band effect
+    public AudioSource stretchSource; // Sound does not play properly without this 
+    public AudioClip stretchClip;     // The sound that loops while dragging
+
     void Update() {
         // Check for mouse down
         if (Input.GetMouseButtonDown(0)) {
@@ -51,6 +55,13 @@ public class Slingshot : MonoBehaviour {
                 // debugging
                 SpawnProjectile();
                 isDragging = true;
+
+                // NEW: Start the stretch sound loop (if we have an AudioSource & clip)
+                if (stretchSource != null && stretchClip != null) {
+                    stretchSource.clip = stretchClip;
+                    stretchSource.loop = true;
+                    stretchSource.Play();
+                }
             }
         }
 
@@ -76,6 +87,13 @@ public class Slingshot : MonoBehaviour {
 
             // This will move the projectile to its new user-defined position when being held onto
             currentProjectile.transform.position = (Vector2)spawnPoint.position + direction;
+
+            // turn on the rubber band effect
+            if (rubberBand != null) {
+                rubberBand.enabled = true; 
+                rubberBand.SetPosition(0, spawnPoint.position);
+                rubberBand.SetPosition(1, currentProjectile.transform.position);
+            }
         }
 
         // When the mouse button is released, launch the ball
@@ -94,6 +112,24 @@ public class Slingshot : MonoBehaviour {
 
                 cameraManager.SwitchToFollowCam();
                 FollowCam.POI = currentProjectile;
+
+                // Stop playing the stretch sound when we release
+                if (stretchSource != null && stretchSource.isPlaying) {
+                    stretchSource.Stop();
+                }
+
+                // now start the flying sound
+                AudioSource ballAudio = currentProjectile.GetComponent<AudioSource>();
+                if (ballAudio != null) {
+                    ballAudio.loop = true;      
+                    ballAudio.Play();           
+                }
+
+                // Stop the rubber band line as well
+                if (rubberBand != null) {
+                    rubberBand.enabled = false;
+                }
+
             }
 
             FollowCam.POI = currentProjectile;
@@ -107,24 +143,23 @@ public class Slingshot : MonoBehaviour {
 
     private void SpawnProjectile() {
         // If lives are less than 0, no more shots allowed.
-        if (GameManager.lives < 0) {
+        if (GameManager.lives == -1) {
             return;
         }
         
         // this is to allow the final shot to be completed before sent to the game over screen
-        if (GameManager.lives == 0) {
-            GameManager.lives = -1;
-        }
+        //if (GameManager.lives == 0) {
+        //    GameManager.lives = -1;
+        //}
         // normal shots
-        else {
-             // if the player does not make it into the green zone, subtract a life
-             // use GameManager.lives so the UI also updates
-            GameManager.lives--;  
-        }
-        
-        
-        
-        
+        //else {
+        //     // if the player does not make it into the green zone, subtract a life
+        //     // use GameManager.lives so the UI also updates
+        //    GameManager.lives--;  
+        //}
+
+        GameManager.lives--;
+
         // Debug.Log("SpawnProjectile called!");
         // spawn the ball
         currentProjectile = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
@@ -133,10 +168,6 @@ public class Slingshot : MonoBehaviour {
         currentProjectileRb = currentProjectile.GetComponent<Rigidbody2D>();
         // Set it to Kinematic 
         currentProjectileRb.bodyType = RigidbodyType2D.Kinematic;
-
-        // if the player does not make it into the green zone, subtract a life
-        // use GameManager.lives so the UI also updates
-        // GameManager.lives--;
 
         // set up the camera 
         FollowCam.POI = currentProjectile;

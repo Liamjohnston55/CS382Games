@@ -10,7 +10,7 @@ public class InfoHub : MonoBehaviour {
 
     void Update() {
         // Display the current amount of lives:
-        livesText.text = "Lives: " + GameManager.lives;
+        livesText.text = "Lives: " + (GameManager.lives + 1);
 
         // Display the current level: 
         int levelIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;

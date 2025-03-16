@@ -10,6 +10,10 @@ public class CollisionDetections : MonoBehaviour {
             hasCollided = true;
             //Debug.Log("ball hit: " + collision.gameObject.name);
 
+            AudioSource ballAudio = GetComponent<AudioSource>();
+            if (ballAudio != null && ballAudio.isPlaying) {
+                ballAudio.Stop();
+            }
             // start the timer then switch back
             StartCoroutine(SwitchBackAndDestroyBall(3f));
         }
@@ -29,7 +33,7 @@ public class CollisionDetections : MonoBehaviour {
         }
 
         // if the player has no more lives call the ending scene 
-        if (GameManager.lives < 0 && !GameManager.levelCompleted) {
+        if (GameManager.lives == -1 && !GameManager.levelCompleted) {
             GameManager.Instance.GameOver();
         }
 
