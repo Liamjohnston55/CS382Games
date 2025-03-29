@@ -1,119 +1,144 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 
-// This is the script that will make sure that the player is moving in third person
+[RequireComponent(typeof(Rigidbody))]
+public class PlayerMovement : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    public float walkSpeed = 5f;      // How fast the character walks
+    public float runSpeed = 10f;      // How fast the character runs
+    public float rotationSmoothTime = 0.1f; // Lower = faster snap/turn
+    public float movementSmoothTime = 0.05f; // (Currently unused; kept for consistency)
 
-public class PlayerMovement : MonoBehaviour {
-    [Header("Movement")]
-    public float MovementSpeed;         // How fast the character will run
+    [Header("References")]
+    public Transform cameraTransform;  // Main Camera transform
+    public Animator animator;          // Character's Animator
+    public Transform modelTransform;   // Visual model child
 
-    public float Drag;
+    private Rigidbody rb;
+    private bool isRunning;
+    private float speedPercent; // 0 = idle, 0.5 = walk, 1.0 = run
 
-    public float jumpForce;
-    public float jumpCooldown;
-    public float airMultiplier;
-    bool readyToJump;
+    void Start() {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true; 
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-    [Header("Keybinds")]
-    public KeyCode jumpkey = KeyCode.Space;
-
-    [Header("Ground Check")]
-    public float characterHeight;
-    public LayerMask whatIsGround;
-    bool grounded;
-
-    float HorizontalInput;              // Horizontal keyboard input
-    float VerticalInput;                // Vertical keyboard input
-    public Transform Orientation;       // Where the character is facing 
-    Vector3 moveDirection;              // What direction the character is moving in
-    Rigidbody RB;                       // Character's gravity 
-
-    private void Start() {
-        // This makes sure the character model has the proper physics
-        RB = GetComponent<Rigidbody>();
-        RB.freezeRotation = true;
-
-        // Getting the jump key ready
-        readyToJump = true;
+        if (modelTransform == null) {
+            // Debugging -------------------------------------------------------------------------------------
+            Debug.LogWarning("No ModelTransform assigned, using parent transform instead.");
+            modelTransform = transform;
+        }
     }
 
-    private void Update() {
-        // Check to see if character is on the ground
-        grounded = Physics.Raycast(transform.position, Vector3.down, characterHeight * 0.5f + 0.3f, whatIsGround);
+    void Update() {
+        // Get raw input
+        float h = Input.GetAxisRaw("Horizontal"); 
+        float v = Input.GetAxisRaw("Vertical");   
 
-        // we need to call character input so the game can receive the data 
-        characterInput();
-        // we also need to make sure the character's speed does not go out of control
-        SpeedControl();
+        // If input is tiny, zero it out
+        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f) {
+            h = 0f;
+            v = 0f;
+        }
 
-        // Applying the drag to the character
-        if (grounded) {
-            RB.drag = Drag;
+        // Check if running
+        isRunning = Input.GetKey(KeyCode.LeftShift);
+
+        // Punch (left mouse)
+        // add this later
+        if (Input.GetMouseButtonDown(0)){
+            animator.SetTrigger("Punch");
+        }
+
+        // Convert input to camera-based direction
+        Vector3 camForward = cameraTransform.forward;
+        Vector3 camRight = cameraTransform.right;
+        camForward.y = 0f;
+        camRight.y = 0f;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 inputDirection = (camForward * v + camRight * h);
+        if (inputDirection.sqrMagnitude > 0.001f) {
+            inputDirection = inputDirection.normalized;
         }
         else {
-            RB.drag = 0;
+            inputDirection = Vector3.zero;
         }
-    }
 
-    private void FixedUpdate() {
-        characterMovement();
-    }
-
-    private void characterInput() {
-        // get the x and y data from the player's input
-        HorizontalInput = Input.GetAxisRaw("Horizontal");
-        VerticalInput = Input.GetAxisRaw("Vertical");
-
-        // We will also check to see when the player hits the jump key
-        // this makes sure the player is on the ground, and ready to jump
-        if(Input.GetKey(jumpkey) && readyToJump && grounded) {
-            readyToJump = false;
-            Jump(); 
-
-            // This allows the character to jump continuously 
-            Invoke(nameof(ResetJump), jumpCooldown);
+        // Determine speed percentage for animations
+        // Regardless of whether vertical input is forward or backward, use the same values.
+        if (inputDirection.sqrMagnitude > 0.001f) {
+            speedPercent = isRunning ? 1f : 0.5f;
         }
-    }
-
-    private void characterMovement() {
-        // Find the character's movement direction
-        moveDirection = Orientation.forward * VerticalInput + Orientation.right * HorizontalInput;
-
-        // character is on the ground
-        if (grounded) {
-            RB.AddForce(moveDirection * MovementSpeed * 10f, ForceMode.Force);
+        else {
+            speedPercent = 0f;
         }
-        // character is in the air 
-        else if (!grounded) {
-            RB.AddForce(moveDirection * MovementSpeed * 10f * airMultiplier, ForceMode.Force);            
+
+        animator.SetFloat("Speed", speedPercent, 0f, Time.deltaTime);
+
+        // Snap the angle to nearest 45°, offset by camera
+        float finalAngle = ComputeSnapAngle(h, v, cameraTransform.eulerAngles.y);
+
+        // Rotate only the model if there's input
+        if (speedPercent > 0f) {
+            Quaternion targetRot = Quaternion.Euler(0f, finalAngle, 0f);
+            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, targetRot, Time.deltaTime * (1f / rotationSmoothTime)
+            );
         }
+
+        // Move character
+        MoveCharacter(h, v);
     }
 
-    private void SpeedControl() {
-        // This will us to find the characters speed 
-        // flatVel will store the x and z axis's
-        Vector3 flatVel = new Vector3(RB.velocity.x, 0f, RB.velocity.z);
+    private void FixedUpdate(){
+        // Movement is done in Update using rb.MovePosition
+    }
 
-        // if the velocity is greater than our movement speed
-        // we will manually change the max velocity to ensure it stays under the max 
-        if (flatVel.magnitude > MovementSpeed) {
-            Vector3 limitedVel = flatVel.normalized * MovementSpeed;
-            RB.velocity = new Vector3(limitedVel.x, RB.velocity.y, limitedVel.z);
+    private void MoveCharacter(float h, float v){
+        // If there's no input, do not move
+        // this is to prevent the character from always walking foward 
+        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f) {
+            return;
         }
+
+        // Always use the same target speed regardless of forward or backward
+        float targetSpeed = isRunning ? runSpeed : walkSpeed;
+
+        // Compute movement direction using snapped angle
+        float angle = ComputeSnapAngle(h, v, cameraTransform.eulerAngles.y);
+        Vector3 direction = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
+
+        Vector3 moveDelta = direction * targetSpeed * Time.deltaTime;
+        rb.MovePosition(rb.position + moveDelta);
     }
 
-    private void Jump() {
-        // Before we apply any forces, we need to set y velocity to zero
-        // This the character will always jump at the exact same height 
-        RB.velocity = new Vector3(RB.velocity.x, 0f, RB.velocity.z);
+    // Snap angle to nearest 45°, offset by camera
+    private float ComputeSnapAngle(float h, float v, float cameraY) {
+        // If no input, return current rotation
+        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f)
+            return modelTransform.eulerAngles.y;
 
-        // Now we can apply the jump's force 
-        RB.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }
+        // 1) Base angle from input using Atan2 (swapping h and v so that W = 0°)
+        float rawAngle = Mathf.Atan2(h, v) * Mathf.Rad2Deg;
+        if (rawAngle < 0f) {
+            rawAngle += 360f;
+        }
 
-    private void ResetJump() {
-        readyToJump = true;
+        // 2) Offset by camera's Y rotation
+        float finalAngle = rawAngle + cameraY;
+        if (finalAngle >= 360f) {
+            finalAngle -= 360f;
+        }
+
+        // 3) Snap to nearest 45°
+        float snapped = Mathf.Round(finalAngle / 45f) * 45f;
+        if (snapped < 0f) {
+            snapped += 360f;
+        }
+        else if (snapped >= 360f) {
+            snapped -= 360f;
+        }
+        return snapped;
     }
 }
