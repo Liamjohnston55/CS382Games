@@ -1,15 +1,15 @@
 using UnityEngine;
 public class Enemy : MonoBehaviour {
     [Header("Set in Inspector: Enemy")]
-    public float speed = 10f;         // vertical speed (world units per second)
-    public float fireRate = 0.3f;     // (Not used in base prototype; reserved for future enemy shooting)
-    public float health = 1;         // hit points (not heavily used in base)
-    public int score = 100;          // points earned for destroying this enemy&#8203;:contentReference[oaicite:66]{index=66}
+    public float speed = 10f;         // vertical speed 
+    public float fireRate = 0.3f;     // how fast you get to shoot
+    public float health = 1;         // hit points 
+    public int score = 100;          // points earned for destroying this enemy
 
     protected BoundsCheck bndCheck;    // reference to BoundsCheck component
 
     void Awake() {
-        bndCheck = GetComponent<BoundsCheck>();  // cache the BoundsCheck on this object&#8203;:contentReference[oaicite:67]{index=67}
+        bndCheck = GetComponent<BoundsCheck>();  // cache the BoundsCheck on this object
     }
 
     // Property to easily get or set position
@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour {
     }
 
     public virtual void Move() {
-        // Default movement: straight down at constant speed
+        // Go straight down 
         Vector3 tempPos = pos;
         tempPos.y -= speed * Time.deltaTime;
         pos = tempPos;
@@ -30,21 +30,19 @@ public class Enemy : MonoBehaviour {
         // Destroy the enemy if it exits the bottom of the screen
         if (bndCheck != null && !bndCheck.isOnScreen) {
             if (pos.y < -bndCheck.camHeight + bndCheck.radius) {
-                // Enemy is off the bottom of the screen – destroy it&#8203;:contentReference[oaicite:68]{index=68}&#8203;:contentReference[oaicite:69]{index=69}
+                // when the enemy is off screen destroy it before it destroys your computer 
                 Destroy(gameObject);
             }
         }
     }
 
     void OnCollisionEnter(Collision coll) {
-        // Handle collision with a ProjectileHero (hero’s bullet)
+        // Handle collision with a ProjectileHero 
         GameObject otherGO = coll.gameObject;
         if (otherGO.tag == "ProjectileHero") {
-            Destroy(otherGO);             // destroy the projectile&#8203;:contentReference[oaicite:70]{index=70}
-            Destroy(gameObject);          // destroy this enemy&#8203;:contentReference[oaicite:71]{index=71}
-            // (In a more advanced game, you might trigger an explosion effect or sound here)
-        } else {
-            Debug.Log("Enemy hit by non-ProjectileHero: " + otherGO.name); // For debugging&#8203;:contentReference[oaicite:72]{index=72}
+            Destroy(otherGO);             // destroy the projectile
+            Destroy(gameObject);          // destroy this enemy
+            
         }
     }
 }

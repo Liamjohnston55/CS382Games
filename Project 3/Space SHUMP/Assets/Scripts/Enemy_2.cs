@@ -11,7 +11,7 @@ public class Enemy_2 : Enemy {
     private float birthTime;
 
     void Start() {
-        // Place p0 off the left edge, p1 off the right (or vice versa)
+        // Place p0 off the left edge, p1 off the right 
         p0 = Vector3.zero;
         p0.x = -bndCheck.camWidth - bndCheck.radius;
         p0.y = Random.Range(-bndCheck.camHeight, bndCheck.camHeight);
@@ -31,10 +31,9 @@ public class Enemy_2 : Enemy {
     }
 
     public override void Move() {
-        // 0..1 based on how far along lifeTime we are
         float u = (Time.time - birthTime) / lifeTime;
         if (u > 1) {
-            // done; self-destruct
+            // when done kill self
             Destroy(gameObject);
             return;
         }

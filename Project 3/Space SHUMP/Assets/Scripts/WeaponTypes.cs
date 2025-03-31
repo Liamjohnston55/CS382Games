@@ -5,7 +5,8 @@ public enum WeaponType {
     none,
     blaster,
     spread,
-    shield
+    shield,
+    enemyBlaster
 }
 
 [System.Serializable]

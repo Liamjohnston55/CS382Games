@@ -51,11 +51,7 @@ public class Enemy_3 : Enemy {
         u = u - 0.2f * Mathf.Sin(u * Mathf.PI * 2);
 
         // Quadratic Bezier interpolation
-        // (1-u)^2 * p0 + 2u(1-u)*p1 + u^2 * p2
-        Vector3 tempPos =
-              (1 - u) * (1 - u) * points[0]
-            + 2 * u * (1 - u) * points[1]
-            + u * u * points[2];
+        Vector3 tempPos = (1 - u) * (1 - u) * points[0] + 2 * u * (1 - u) * points[1] + u * u * points[2];
 
         pos = tempPos;
     }

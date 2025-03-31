@@ -10,11 +10,10 @@ public class BoundsCheck : MonoBehaviour {
     public float camWidth;
     public float camHeight;
 
-    // These can be public if you’d like to check them in the Inspector
     [HideInInspector] public bool offRight, offLeft, offUp, offDown;
 
     void Awake() {
-        // Get camera bounds based on main camera’s orthographic size and aspect ratio
+        // Get camera bounds based on main cameras size
         camHeight = Camera.main.orthographicSize;
         camWidth = camHeight * Camera.main.aspect;
     }
@@ -48,7 +47,6 @@ public class BoundsCheck : MonoBehaviour {
         isOnScreen = !(offRight || offLeft || offUp || offDown);
 
         if (keepOnScreen && !isOnScreen) {
-            // If we’re supposed to keep the object on screen, reposition
             transform.position = pos;
             isOnScreen = true;
             offRight = offLeft = offUp = offDown = false;

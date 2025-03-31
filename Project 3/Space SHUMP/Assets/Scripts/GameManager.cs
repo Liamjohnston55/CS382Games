@@ -1,21 +1,26 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager S;  // Singleton for GameManager
 
     [Header("Set in Inspector")]
-    public GameObject[] prefabEnemies; // e.g., Size=4 for [Base, Enemy_1, Enemy_2, Enemy_3]
-    public float enemySpawnPerSecond = 0.5f;  // # enemies to spawn per second
-    public float enemyDefaultPadding = 1.5f;  // Padding to keep them within screen horizontally
+    public GameObject[] prefabEnemies;          // the array of enemy's 
+    public float enemySpawnPerSecond = 0.5f;    // number of enemies to spawn per second
+    public float enemyDefaultPadding = 1.5f;    // offset to keep them on screen 
 
-    public WeaponDefinition[] weaponDefinitions; // For weapon stats (blaster, spread, etc.)
+    public WeaponDefinition[] weaponDefinitions; // For weapon stats 
+
+    // NEW: For power-up spawning
+    public GameObject[] prefabPowerUps;
+    public float powerUpSpawnInterval = 15f;
 
     static private Dictionary<WeaponType, WeaponDefinition> weaponDict;
     private BoundsCheck bndCheck;
 
     void Awake() {
-        // Set Singleton
         S = this;
 
         // Grab BoundsCheck if it exists on the same GameObject
@@ -29,14 +34,17 @@ public class GameManager : MonoBehaviour {
 
         // Start spawning enemies
         Invoke("SpawnEnemy", 1f / enemySpawnPerSecond);
+
+        // NEW: Start spawning power-ups
+        InvokeRepeating("SpawnPowerUp", 5f, powerUpSpawnInterval);
     }
 
     void SpawnEnemy() {
-        // 1) Pick a random enemy from the array
+        // Pick a random enemy from the array
         int ndx = Random.Range(0, prefabEnemies.Length);
         GameObject go = Instantiate(prefabEnemies[ndx]) as GameObject;
 
-        // 2) Position it above the screen at a random X position
+        // Position it above the screen at a random X position
         float enemyPadding = enemyDefaultPadding;
         BoundsCheck enemyBC = go.GetComponent<BoundsCheck>();
         if (enemyBC != null) {
@@ -50,16 +58,42 @@ public class GameManager : MonoBehaviour {
         pos.y = bndCheck.camHeight + enemyPadding;
         go.transform.position = pos;
 
-        // 3) Schedule the next spawn
+        // Schedule the next spawn
         Invoke("SpawnEnemy", 1f / enemySpawnPerSecond);
     }
 
+    // NEW: Spawn a power-up from the prefabPowerUps array
+    void SpawnPowerUp() {
+        if (prefabPowerUps.Length == 0) return;
+        int ndx = Random.Range(0, prefabPowerUps.Length);
+        GameObject pu = Instantiate(prefabPowerUps[ndx]) as GameObject;
+        // Position it above the screen at a random X position
+        float padding = enemyDefaultPadding;
+        Vector3 pos = Vector3.zero;
+        float xMin = -bndCheck.camWidth + padding;
+        float xMax = bndCheck.camWidth - padding;
+        pos.x = Random.Range(xMin, xMax);
+        pos.y = bndCheck.camHeight + padding;
+        pu.transform.position = pos;
+    }
+
     // Look up a WeaponDefinition by its WeaponType
-    static public WeaponDefinition GetWeaponDefinition(WeaponType wt) {
-        if (weaponDict.ContainsKey(wt)) {
-            return weaponDict[wt];
+    public static WeaponDefinition GetWeaponDefinition(WeaponType wt) {
+        if (!weaponDict.ContainsKey(wt)) {
+            return new WeaponDefinition(); 
         }
-        // Return a default “empty” weapon definition if not found
-        return new WeaponDefinition();
+        WeaponDefinition foundDef = weaponDict[wt];
+        return foundDef;
+    }
+
+    public static void ReloadSceneAfterDelay(float delay) {
+        // We call a static coroutine on S
+        // this is so the game will restart after 5 seconds
+        S.StartCoroutine(ReloadSceneCoroutine(delay));
+    }
+
+    private static IEnumerator ReloadSceneCoroutine(float delay) {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

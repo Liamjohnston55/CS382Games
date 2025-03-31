@@ -16,24 +16,24 @@ public class Enemy_1 : Enemy {
     }
 
     public override void Move() {
-        // 1) Start with the current position
+        // Start with the current position
         Vector3 tempPos = pos;
 
-        // 2) Calculate how long this enemy has existed
+        // Calculate how long this enemy has existed
         float age = Time.time - birthTime;
-        // 3) Convert that to a value between 0..2π based on waveFrequency
+        // Convert that to a value between 0..2π based on waveFrequency
         float theta = Mathf.PI * 2 * (age / waveFrequency);
         float sin = Mathf.Sin(theta);
 
-        // 4) Offset x by the sine wave
+        // Offset x by the sine wave
         tempPos.x = x0 + waveWidth * sin;
         pos = tempPos;
 
-        // 5) Tilt the ship (rotating around the Y-axis)
+        // Tilt the ship 
         Vector3 rot = new Vector3(0, sin * waveRotY, 0);
         transform.rotation = Quaternion.Euler(rot);
 
-        // 6) Still move down normally (via base.Move())
+        // Still move down normally 
         base.Move();
     }
 }
