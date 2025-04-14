@@ -7,7 +7,10 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed = 5f;      // How fast the character walks
     public float runSpeed = 10f;      // How fast the character runs
     public float rotationSmoothTime = 0.1f; // Lower = faster snap/turn
-    public float movementSmoothTime = 0.05f; // (Currently unused; kept for consistency)
+
+    [Header("Punch Settings")]
+    public float punchDamage = 10f;   // Damage dealt by a punch
+    public float punchRange = 2f;     // Players punch range 
 
     [Header("References")]
     public Transform cameraTransform;  // Main Camera transform
@@ -16,15 +19,15 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private bool isRunning;
-    private float speedPercent; // 0 = idle, 0.5 = walk, 1.0 = run
+    private float speedPercent; // used for animation's
 
     void Start() {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true; 
         rb.interpolation = RigidbodyInterpolation.Interpolate;
 
+        // fallback incase the correct monkey model is not assigned
         if (modelTransform == null) {
-            // Debugging -------------------------------------------------------------------------------------
             Debug.LogWarning("No ModelTransform assigned, using parent transform instead.");
             modelTransform = transform;
         }
@@ -41,13 +44,13 @@ public class PlayerMovement : MonoBehaviour
             v = 0f;
         }
 
-        // Check if running
+        // Check if the player is running or not
         isRunning = Input.GetKey(KeyCode.LeftShift);
 
-        // Punch (left mouse)
-        // add this later
+        // trigger punch attack 
         if (Input.GetMouseButtonDown(0)){
             animator.SetTrigger("Punch");
+            DoPunch();  
         }
 
         // Convert input to camera-based direction
@@ -66,28 +69,28 @@ public class PlayerMovement : MonoBehaviour
             inputDirection = Vector3.zero;
         }
 
-        // Determine speed percentage for animations
-        // Regardless of whether vertical input is forward or backward, use the same values.
-        if (inputDirection.sqrMagnitude > 0.001f) {
-            speedPercent = isRunning ? 1f : 0.5f;
-        }
-        else {
+        // Determine speed for animations
+        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f) {
             speedPercent = 0f;
         }
-
+        else {
+            // Use 0.3 for walking backward, 0.5 for walking regularly, 1 for running
+            if (v < 0f)
+                speedPercent = 0.3f;
+            else
+                speedPercent = isRunning ? 1f : 0.5f;
+        }
         animator.SetFloat("Speed", speedPercent, 0f, Time.deltaTime);
 
-        // Snap the angle to nearest 45°, offset by camera
+        // Snap the camera angle to nearest 45°
         float finalAngle = ComputeSnapAngle(h, v, cameraTransform.eulerAngles.y);
 
         // Rotate only the model if there's input
         if (speedPercent > 0f) {
             Quaternion targetRot = Quaternion.Euler(0f, finalAngle, 0f);
-            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, targetRot, Time.deltaTime * (1f / rotationSmoothTime)
-            );
+            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, targetRot, Time.deltaTime * (1f / rotationSmoothTime));
         }
 
-        // Move character
         MoveCharacter(h, v);
     }
 
@@ -97,12 +100,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void MoveCharacter(float h, float v){
         // If there's no input, do not move
-        // this is to prevent the character from always walking foward 
         if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f) {
             return;
         }
 
-        // Always use the same target speed regardless of forward or backward
+        // Always use the same walking speed regardless of forward or backward
         float targetSpeed = isRunning ? runSpeed : walkSpeed;
 
         // Compute movement direction using snapped angle
@@ -119,19 +121,19 @@ public class PlayerMovement : MonoBehaviour
         if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f)
             return modelTransform.eulerAngles.y;
 
-        // 1) Base angle from input using Atan2 (swapping h and v so that W = 0°)
+        // Mathf.Atan cacululates the angle in radians, and then multiply by Mathf.Rad2Deg to get it to degrees
         float rawAngle = Mathf.Atan2(h, v) * Mathf.Rad2Deg;
         if (rawAngle < 0f) {
-            rawAngle += 360f;
+            rawAngle += 360f; // if the resulting angle is negative, add 360 to keep it positive
         }
 
-        // 2) Offset by camera's Y rotation
+        // align player's movement direction to the direction the camera is facing
         float finalAngle = rawAngle + cameraY;
         if (finalAngle >= 360f) {
             finalAngle -= 360f;
         }
 
-        // 3) Snap to nearest 45°
+        // Snap to nearest 45°
         float snapped = Mathf.Round(finalAngle / 45f) * 45f;
         if (snapped < 0f) {
             snapped += 360f;
@@ -141,4 +143,19 @@ public class PlayerMovement : MonoBehaviour
         }
         return snapped;
     }
+
+    // punch attack (add more later)
+    private void DoPunch() {
+        // Determine where to apply damage
+        Vector3 punchOrigin = modelTransform.position + modelTransform.forward * (punchRange * 0.5f);
+        Collider[] hitColliders = Physics.OverlapSphere(punchOrigin, punchRange);
+        foreach (Collider hit in hitColliders) {
+            // Try to get a Harvestable component from the hit object (later you may hit an enemy)
+            Harvestable targetHarvestable = hit.GetComponent<Harvestable>();
+            if (targetHarvestable != null) {
+                targetHarvestable.Harvest();
+            }
+        }
+    }
+
 }

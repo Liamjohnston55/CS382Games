@@ -1,0 +1,138 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6660829867846778518
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 186.24
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21.34
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 138.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      propertyPath: m_Name
+      value: 'Tree '
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9076537710172165331}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1475327870809503121}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 998623465651640036}
+  m_SourcePrefab: {fileID: 100100000, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+--- !u!1 &5814548064909427655 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+  m_PrefabInstance: {fileID: 6660829867846778518}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &9076537710172165331
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5814548064909427655}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3085395665826705712, guid: 29f5ce45500b375459b2e6887b87cc06, type: 3}
+--- !u!114 &1475327870809503121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5814548064909427655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a57e0d0034e85248b849b7b60324b79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceType: 1
+  resourceYield: 5
+  health: 50
+  damagePerHit: 10
+  harvestEffect: {fileID: 0}
+  respawnTime: 300
+--- !u!114 &998623465651640036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5814548064909427655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1dde7b81f95804789bef9df90cbd3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Website: https://free3d.com/3d-model/tree-67970.html
