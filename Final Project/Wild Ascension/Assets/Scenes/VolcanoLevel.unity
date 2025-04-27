@@ -3907,7 +3907,6 @@ GameObject:
   - component: {fileID: 445112278}
   - component: {fileID: 445112277}
   - component: {fileID: 445112276}
-  - component: {fileID: 445112275}
   m_Layer: 0
   m_Name: FreeLook Camera
   m_TagString: MainCamera
@@ -3930,18 +3929,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 981820788}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &445112275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 445112273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25e26a068dedc70418cd587a26863b8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &445112276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5401,7 +5388,12 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 6
   rotationSmoothTime: 0.1
-  punchDamage: 10
+  jumpForce: 8
+  jumpCooldown: 0.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  punchDamage: 6
   punchRange: 2
   cameraTransform: {fileID: 1082807571}
   animator: {fileID: 101118406}
@@ -9762,7 +9754,6 @@ GameObject:
   - component: {fileID: 1082807577}
   - component: {fileID: 1082807576}
   - component: {fileID: 1082807575}
-  - component: {fileID: 1082807574}
   - component: {fileID: 1082807573}
   - component: {fileID: 1082807572}
   m_Layer: 0
@@ -9836,18 +9827,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!114 &1082807574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1082807570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfbe97460f8acd1488a82178305cdf59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1082807575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19806,6 +19785,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1182881213}
     m_Modifications:
+    - target: {fileID: 374760110920748335, guid: 31280fe69d2ecdb4c838496902ccf4c1, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2233007518227627563, guid: 31280fe69d2ecdb4c838496902ccf4c1, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2884489501380921738, guid: 31280fe69d2ecdb4c838496902ccf4c1, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3066117274225520063, guid: 31280fe69d2ecdb4c838496902ccf4c1, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5459440854115056066, guid: 31280fe69d2ecdb4c838496902ccf4c1, type: 3}
       propertyPath: m_Name
       value: Map v1.0

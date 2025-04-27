@@ -4,158 +4,159 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float walkSpeed = 5f;      // How fast the character walks
-    public float runSpeed = 10f;      // How fast the character runs
-    public float rotationSmoothTime = 0.1f; // Lower = faster snap/turn
+    public float walkSpeed = 5f;      
+    public float runSpeed = 10f;      
+    public float rotationSmoothTime = 0.1f; 
+
+    [Header("Jump Settings")]
+    public float jumpForce = 5f;      
+    public float jumpCooldown = 0.5f; 
+    public LayerMask groundLayer;     
+
+    private bool readyToJump = true;  
+    private bool grounded = false;    
 
     [Header("Punch Settings")]
-    public float punchDamage = 10f;   // Damage dealt by a punch
-    public float punchRange = 2f;     // Players punch range 
+    public float punchDamage = 10f;   
+    public float punchRange = 2f;     
 
     [Header("References")]
-    public Transform cameraTransform;  // Main Camera transform
-    public Animator animator;          // Character's Animator
-    public Transform modelTransform;   // Visual model child
+    public Transform cameraTransform; 
+    public Animator animator;         
+    public Transform modelTransform;  
 
     private Rigidbody rb;
     private bool isRunning;
-    private float speedPercent; // used for animation's
+    private float speedPercent;
 
-    void Start() {
+    private bool isPunching = false;      
+    private Vector3 punchDirection = Vector3.forward; 
+    private Quaternion punchRotation;      // ← store the rotation at punch
+
+    void Start()
+    {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true; 
+        rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-        // fallback incase the correct monkey model is not assigned
-        if (modelTransform == null) {
+        if (modelTransform == null)
+        {
             Debug.LogWarning("No ModelTransform assigned, using parent transform instead.");
             modelTransform = transform;
         }
     }
 
-    void Update() {
-        // Get raw input
-        float h = Input.GetAxisRaw("Horizontal"); 
-        float v = Input.GetAxisRaw("Vertical");   
+    void Update()
+    {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
 
-        // If input is tiny, zero it out
-        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f) {
-            h = 0f;
-            v = 0f;
-        }
+        if (Mathf.Abs(h) < 0.1f) h = 0f;
+        if (Mathf.Abs(v) < 0.1f) v = 0f;
 
-        // Check if the player is running or not
+        // cancel punch state if player moves
+        if (isPunching && (h != 0f || v != 0f))
+            isPunching = false;
+
         isRunning = Input.GetKey(KeyCode.LeftShift);
 
-        // trigger punch attack 
-        if (Input.GetMouseButtonDown(0)){
+        // handle punch input
+        if (Input.GetMouseButtonDown(0))
+        {
             animator.SetTrigger("Punch");
-            DoPunch();  
+            DoPunch();
+            isPunching = true;
+
+            // capture rotation at punch start
+            punchRotation = modelTransform.rotation;
+
+            // capture direction at punch start (if you still need it)
+            Vector3 camF = cameraTransform.forward; camF.y = 0f;
+            Vector3 camR = cameraTransform.right;   camR.y = 0f;
+            camF.Normalize(); camR.Normalize();
+            punchDirection = (camF * v + camR * h).normalized;
         }
 
-        // Convert input to camera-based direction
-        Vector3 camForward = cameraTransform.forward;
-        Vector3 camRight = cameraTransform.right;
-        camForward.y = 0f;
-        camRight.y = 0f;
-        camForward.Normalize();
-        camRight.Normalize();
-
-        Vector3 inputDirection = (camForward * v + camRight * h);
-        if (inputDirection.sqrMagnitude > 0.001f) {
-            inputDirection = inputDirection.normalized;
-        }
-        else {
-            inputDirection = Vector3.zero;
+        // jump logic
+        if (Input.GetButtonDown("Jump") && readyToJump && grounded)
+        {
+            readyToJump = false;
+            animator.SetTrigger("JumpUp");
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-        // Determine speed for animations
-        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f) {
-            speedPercent = 0f;
-        }
-        else {
-            // Use 0.3 for walking backward, 0.5 for walking regularly, 1 for running
-            if (v < 0f)
-                speedPercent = 0.3f;
-            else
-                speedPercent = isRunning ? 1f : 0.5f;
-        }
+        // build camera-relative move vector
+        Vector3 forward = cameraTransform.forward; forward.y = 0f;
+        Vector3 right   = cameraTransform.right;   right.y   = 0f;
+        forward.Normalize(); right.Normalize();
+
+        Vector3 inputDirection = isPunching 
+            ? punchDirection 
+            : (forward * v + right * h).sqrMagnitude > 0.001f
+                ? (forward * v + right * h).normalized
+                : Vector3.zero;
+
+        // update animator speed
+        speedPercent = inputDirection.magnitude > 0f
+            ? (isRunning ? 1f : 0.5f)
+            : 0f;
         animator.SetFloat("Speed", speedPercent, 0f, Time.deltaTime);
 
-        // Snap the camera angle to nearest 45°
-        float finalAngle = ComputeSnapAngle(h, v, cameraTransform.eulerAngles.y);
-
-        // Rotate only the model if there's input
-        if (speedPercent > 0f) {
-            Quaternion targetRot = Quaternion.Euler(0f, finalAngle, 0f);
-            modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, targetRot, Time.deltaTime * (1f / rotationSmoothTime));
+        // ROTATION: lock at punchOrientation until movement resumes
+        if (isPunching)
+        {
+            modelTransform.rotation = punchRotation;
+        }
+        else if (inputDirection.magnitude > 0f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(inputDirection);
+            modelTransform.rotation = Quaternion.Slerp(
+                modelTransform.rotation,
+                targetRot,
+                Time.deltaTime / rotationSmoothTime
+            );
         }
 
-        MoveCharacter(h, v);
+        // move if not punching
+        if (!isPunching)
+            MoveCharacter(inputDirection);
     }
 
-    private void FixedUpdate(){
-        // Movement is done in Update using rb.MovePosition
+    private void ResetJump()
+    {
+        readyToJump = true;
     }
 
-    private void MoveCharacter(float h, float v){
-        // If there's no input, do not move
-        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f) {
-            return;
-        }
-
-        // Always use the same walking speed regardless of forward or backward
-        float targetSpeed = isRunning ? runSpeed : walkSpeed;
-
-        // Compute movement direction using snapped angle
-        float angle = ComputeSnapAngle(h, v, cameraTransform.eulerAngles.y);
-        Vector3 direction = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
-
-        Vector3 moveDelta = direction * targetSpeed * Time.deltaTime;
-        rb.MovePosition(rb.position + moveDelta);
+    private void MoveCharacter(Vector3 direction)
+    {
+        if (direction.magnitude < 0.01f) return;
+        float speed = isRunning ? runSpeed : walkSpeed;
+        Vector3 delta = direction * speed * Time.deltaTime;
+        rb.MovePosition(rb.position + delta);
     }
 
-    // Snap angle to nearest 45°, offset by camera
-    private float ComputeSnapAngle(float h, float v, float cameraY) {
-        // If no input, return current rotation
-        if (Mathf.Abs(h) < 0.1f && Mathf.Abs(v) < 0.1f)
-            return modelTransform.eulerAngles.y;
-
-        // Mathf.Atan cacululates the angle in radians, and then multiply by Mathf.Rad2Deg to get it to degrees
-        float rawAngle = Mathf.Atan2(h, v) * Mathf.Rad2Deg;
-        if (rawAngle < 0f) {
-            rawAngle += 360f; // if the resulting angle is negative, add 360 to keep it positive
-        }
-
-        // align player's movement direction to the direction the camera is facing
-        float finalAngle = rawAngle + cameraY;
-        if (finalAngle >= 360f) {
-            finalAngle -= 360f;
-        }
-
-        // Snap to nearest 45°
-        float snapped = Mathf.Round(finalAngle / 45f) * 45f;
-        if (snapped < 0f) {
-            snapped += 360f;
-        }
-        else if (snapped >= 360f) {
-            snapped -= 360f;
-        }
-        return snapped;
-    }
-
-    // punch attack (add more later)
-    private void DoPunch() {
-        // Determine where to apply damage
-        Vector3 punchOrigin = modelTransform.position + modelTransform.forward * (punchRange * 0.5f);
-        Collider[] hitColliders = Physics.OverlapSphere(punchOrigin, punchRange);
-        foreach (Collider hit in hitColliders) {
-            // Try to get a Harvestable component from the hit object (later you may hit an enemy)
-            Harvestable targetHarvestable = hit.GetComponent<Harvestable>();
-            if (targetHarvestable != null) {
-                targetHarvestable.Harvest();
-            }
+    private void DoPunch()
+    {
+        Vector3 origin = modelTransform.position + modelTransform.forward * (punchRange * 0.5f);
+        Collider[] hits = Physics.OverlapSphere(origin, punchRange);
+        foreach (var c in hits)
+        {
+            var hlt = c.GetComponent<Harvestable>();
+            if (hlt != null) hlt.Harvest();
         }
     }
 
+    void OnCollisionEnter(Collision col)
+    {
+        if (((1 << col.gameObject.layer) & groundLayer) != 0)
+            grounded = true;
+    }
+
+    void OnCollisionExit(Collision col)
+    {
+        if (((1 << col.gameObject.layer) & groundLayer) != 0)
+            grounded = false;
+    }
 }
