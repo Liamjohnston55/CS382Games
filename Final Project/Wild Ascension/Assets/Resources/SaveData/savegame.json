@@ -1,0 +1,28 @@
+{
+    "level": 1,
+    "currentXP": 0,
+    "xpToNextLevel": 100,
+    "maxHealth": 100.0,
+    "jumpForce": 8.0,
+    "punchDamage": 10.0,
+    "resources": [],
+    "playerPosition": {
+        "x": 1.6283032894134522,
+        "y": 23.200000762939454,
+        "z": 0.41041696071624758
+    },
+    "playerRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "hotbarItems": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ],
+    "hotbarSelectedIndex": 0
+}

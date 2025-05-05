@@ -120,6 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceType: 0
   resourceYield: 5
+  xpReward: 10
   health: 50
   damagePerHit: 10
   harvestEffect: {fileID: 0}

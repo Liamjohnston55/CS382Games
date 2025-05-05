@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831a37559718f5f418e14a4103b994d7, type: 3}
+  m_Name: StoneAxe
+  m_EditorClassIdentifier: 
+  recipeName: Stone Axe
+  icon: {fileID: 21300000, guid: 0014ea48ddb28d24f8d35f5b8bf91453, type: 3}
+  ingredients:
+  - resourceName: Stone
+    amount: 20
+  - resourceName: Wood
+    amount: 100
+  resultResourceName: Stone Axe
+  resultAmount: 1
+  xpReward: 50
+  weaponData: {fileID: 11400000, guid: ddc01d7c8420eee408e83500c1befb3f, type: 2}

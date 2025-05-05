@@ -1,49 +1,52 @@
 using UnityEngine;
 using System.Collections;
 
-public class Harvestable : MonoBehaviour
-{
+public class Harvestable : MonoBehaviour {
     public enum ResourceType { Stone, Wood }
-    public ResourceType resourceType = ResourceType.Stone;  // Set what type of resource to harvest for the inventory
-    public int resourceYield = 5;               // How much of the resource you get
-    public float health = 50f;                  // Resources hitpoints 
-    public float damagePerHit = 10f;            // Damage applied per punch (edit later for other weapons)
-    public GameObject harvestEffect;            // add effect when broken later
+    public ResourceType resourceType = ResourceType.Stone;  // Set what type of resource to harvest
+    public int resourceYield = 5;                           // How much of the resource you get
+    public int xpReward      = 10;                          // XP awarded on harvest
+    public float health        = 50f;                       // Resources hit points 
+    public float damagePerHit  = 10f;                       // no weapon equipped
+    public GameObject harvestEffect;                        // Effect when broken (may use may not depending on needed resources)
 
-    // set the amount of seconds you want before a resource responds
-    public float respawnTime = 300f;  
+    public float respawnTime = 300f;                        // time in seconds it takes to re-spawn the resource
 
-    // Store the object's initial health for when it is respawned and needs that value again
-    private float initialHealth;
+    private float initialHealth;                            // initial health of the resource
 
     void Awake() {
-        // Save the starting health for later reset
-        initialHealth = health;
+        initialHealth = health; // set the object's health
     }
 
-    // Call this method when the object is harvested
-    public void Harvest() {
-        // change later
-        health -= damagePerHit;
-        if (health <= 0f)
-        {
-            // Add resource amount to the player's inventory 
+    public void Harvest(){
+        Harvest(damagePerHit); // no-weapon harvest
+    }
+
+    public void Harvest(float damage) {
+        health -= damage;         // apply bonus damage from weapon
+        if (health <= 0f) {
+            // give resources
             Inventory playerInventory = FindObjectOfType<Inventory>();
             if (playerInventory != null) {
                 playerInventory.AddResource(resourceType.ToString(), resourceYield);
             }
 
-            // Add harvest effect later
+            // give XP
+            PlayerStats stats = FindObjectOfType<PlayerStats>();
+            if (stats != null) {
+                stats.AddXP(xpReward);
+            }
+
+            // harvest effect (may use may not depending on needed resource)
             if (harvestEffect != null) {
                 Instantiate(harvestEffect, transform.position, Quaternion.identity);
             }
-            
-            // disable the object until the respawn time has passed 
+
+            // respawn logic (un-hide the object in respawnTime amount of timne)
             if (RespawnResources.Instance != null) {
                 RespawnResources.Instance.StartRespawn(gameObject, respawnTime, initialHealth);
             }
             else {
-                // failsafe incase anything breaks 
                 gameObject.SetActive(false);
             }
         }

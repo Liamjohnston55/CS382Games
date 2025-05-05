@@ -5,7 +5,7 @@ public class RespawnResources : MonoBehaviour {
     public static RespawnResources Instance { get; private set; }  // we use instance, we can call respawn without needing to locate the manager each time 
 
     void Awake() {
-        if (Instance == null){
+        if (Instance == null) {
             Instance = this;
         }
         else {
@@ -13,6 +13,7 @@ public class RespawnResources : MonoBehaviour {
         }
     }
 
+    // called by Harvestable when it breaks
     public void StartRespawn(GameObject obj, float respawnDelay, float resetHealth) {
         StartCoroutine(RespawnCoroutine(obj, respawnDelay, resetHealth));
     }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831a37559718f5f418e14a4103b994d7, type: 3}
+  m_Name: StonePickaxe
+  m_EditorClassIdentifier: 
+  recipeName: Stone Pickaxe
+  icon: {fileID: 21300000, guid: 12a0159fd524c3541a53788a09cb6609, type: 3}
+  ingredients:
+  - resourceName: Stone
+    amount: 30
+  - resourceName: Wood
+    amount: 50
+  resultResourceName: Stone Pickaxe
+  resultAmount: 1
+  xpReward: 50
+  weaponData: {fileID: 11400000, guid: f9c1646548127b442b50adcce27d2088, type: 2}
